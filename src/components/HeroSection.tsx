@@ -33,12 +33,6 @@ const HeroSection = () => {
 
       <div className="container mx-auto sm:px-6 lg:px-8 relative z-10 px-[2px] py-[80px]">
         <div className="max-w-4xl mx-auto text-center">
-          {/* Badge */}
-          <div className="inline-flex items-center gap-2 bg-accent text-accent-foreground px-4 py-1.5 rounded-full text-sm font-medium mb-6 border border-primary/20 animate-fade-in">
-            <span className="w-2 h-2 rounded-full bg-secondary animate-pulse" />
-            AI-Powered Dermatology Analysis
-          </div>
-
           {/* Heading */}
           <h1 className="font-heading text-4xl sm:text-5xl lg:text-6xl font-extrabold text-foreground leading-tight mb-6 animate-fade-up">
             Upload a Skin Image for{" "}
