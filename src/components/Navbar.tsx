@@ -3,7 +3,7 @@ import { Menu, X, Microscope } from "lucide-react";
 
 const navLinks = [
   { label: "Home", href: "#home" },
-  { label: "Features", href: "#features" },
+  
   { label: "Disease Types", href: "#disease-types" },
   { label: "About", href: "#about" },
   { label: "Contact", href: "#contact" },
