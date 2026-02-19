@@ -56,7 +56,7 @@ const AboutSection = () => {
             {/* Stats */}
             <div className="mt-8 grid grid-cols-3 gap-4">
               {[
-                { value: "10+", label: "Disease Categories" },
+                { value: "10", label: "Disease Categories" },
                 { value: "99%", label: "Uptime" },
                 { value: "<3s", label: "Analysis Time" },
               ].map(({ value, label }) => (
