@@ -1,31 +1,31 @@
 import { Target, Heart, Users, Award } from "lucide-react";
 
 const values = [
-  {
-    icon: Target,
-    title: "Our Mission",
-    description:
-      "To make preliminary skin health analysis accessible to everyone through the power of artificial intelligence — bridging the gap between patients and dermatological care.",
-  },
-  {
-    icon: Heart,
-    title: "Patient First",
-    description:
-      "Every feature we build centers around the patient experience. We prioritize clarity, accessibility, and emotional reassurance in our design.",
-  },
-  {
-    icon: Users,
-    title: "For Everyone",
-    description:
-      "Whether you're a patient, caregiver, or medical student, DermAI is designed to be useful, intuitive, and informative for all users.",
-  },
-  {
-    icon: Award,
-    title: "Research-Backed",
-    description:
-      "Our model is trained on validated dermatological datasets used in peer-reviewed medical research, ensuring clinical relevance.",
-  },
-];
+{
+  icon: Target,
+  title: "Our Mission",
+  description:
+  "To make preliminary skin health analysis accessible to everyone through the power of artificial intelligence — bridging the gap between patients and dermatological care."
+},
+{
+  icon: Heart,
+  title: "Patient First",
+  description:
+  "Every feature we build centers around the patient experience. We prioritize clarity, accessibility, and emotional reassurance in our design."
+},
+{
+  icon: Users,
+  title: "For Everyone",
+  description:
+  "Whether you're a patient, caregiver, or medical student, DermAI is designed to be useful, intuitive, and informative for all users."
+},
+{
+  icon: Award,
+  title: "Research-Backed",
+  description:
+  "Our model is trained on validated dermatological datasets used in peer-reviewed medical research, ensuring clinical relevance."
+}];
+
 
 const AboutSection = () => {
   return (
@@ -56,25 +56,25 @@ const AboutSection = () => {
             {/* Stats */}
             <div className="mt-8 grid grid-cols-3 gap-4">
               {[
-                { value: "10", label: "Disease Categories" },
-                { value: "99%", label: "Uptime" },
-                { value: "<3s", label: "Analysis Time" },
-              ].map(({ value, label }) => (
-                <div key={label} className="text-center bg-muted/40 rounded-xl p-4 border border-border">
-                  <p className="font-heading text-2xl font-extrabold gradient-text">{value}</p>
-                  <p className="text-xs text-muted-foreground mt-1">{label}</p>
-                </div>
-              ))}
+              { value: "10", label: "Disease Categories" },
+              { value: "99%", label: "Uptime" },
+              { value: "<3s", label: "Analysis Time" }].
+              map(({ value, label }) => {}
+
+
+
+
+              )}
             </div>
           </div>
 
           {/* Right cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-            {values.map(({ icon: Icon, title, description }) => (
-              <div
-                key={title}
-                className="bg-background border border-border rounded-2xl p-6 card-shadow hover:card-shadow-hover transition-all duration-300"
-              >
+            {values.map(({ icon: Icon, title, description }) =>
+            <div
+              key={title}
+              className="bg-background border border-border rounded-2xl p-6 card-shadow hover:card-shadow-hover transition-all duration-300">
+
                 <div className="w-11 h-11 gradient-primary rounded-xl flex items-center justify-center mb-4">
                   <Icon className="w-5 h-5 text-primary-foreground" />
                 </div>
@@ -85,12 +85,12 @@ const AboutSection = () => {
                   {description}
                 </p>
               </div>
-            ))}
+            )}
           </div>
         </div>
       </div>
-    </section>
-  );
+    </section>);
+
 };
 
 export default AboutSection;
