@@ -3,7 +3,7 @@ import heroBanner from "@/assets/hero-banner.jpg";
 
 const stats = [
   { icon: Brain, label: "AI Model", value: "Deep Learning" },
-  { icon: Zap, label: "Analysis Speed", value: "< 3 Seconds" },
+  { icon: Zap, label: "Analysis Speed", value: "< 10 Seconds" },
   { icon: ShieldCheck, label: "Privacy", value: "100% Secure" },
 ];
 
