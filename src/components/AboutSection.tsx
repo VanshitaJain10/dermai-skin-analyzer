@@ -59,12 +59,12 @@ const AboutSection = () => {
               { value: "10", label: "Disease Categories" },
               { value: "99%", label: "Uptime" },
               { value: "<3s", label: "Analysis Time" }].
-              map(({ value, label }) => {}
-
-
-
-
-              )}
+              map(({ value, label }) => (
+                <div key={label} className="text-center">
+                  <p className="text-2xl font-bold text-foreground">{value}</p>
+                  <p className="text-sm text-muted-foreground">{label}</p>
+                </div>
+              ))}
             </div>
           </div>
 
