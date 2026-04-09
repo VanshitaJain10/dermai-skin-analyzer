@@ -1,40 +1,78 @@
 import { useState, useRef, useCallback } from "react";
-import { Upload, X, ImageIcon, ScanLine, AlertTriangle, CheckCircle } from "lucide-react";
+import { Upload, X, ImageIcon, ScanLine, AlertTriangle, CheckCircle, AlertCircle } from "lucide-react";
+
+type AnalysisResult = {
+  predicted_class: string;
+  confidence: number;
+  top3: { class: string; probability: number }[];
+};
 
 const UploadSection = () => {
   const [preview, setPreview] = useState<string | null>(null);
+  const [file, setFile] = useState<File | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analyzed, setAnalyzed] = useState(false);
+  const [result, setResult] = useState<AnalysisResult | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleFile = (file: File) => {
-    if (!file.type.startsWith("image/")) return;
+  const handleFile = (f: File) => {
+    if (!f.type.startsWith("image/")) return;
     const reader = new FileReader();
     reader.onload = (e) => setPreview(e.target?.result as string);
-    reader.readAsDataURL(file);
+    reader.readAsDataURL(f);
+    setFile(f);
     setAnalyzed(false);
+    setResult(null);
+    setError(null);
   };
 
   const handleDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault();
     setIsDragging(false);
-    const file = e.dataTransfer.files[0];
-    if (file) handleFile(file);
+    const dropped = e.dataTransfer.files[0];
+    if (dropped) handleFile(dropped);
   }, []);
 
-  const handleAnalyze = () => {
-    if (!preview) return;
+  const handleAnalyze = async () => {
+    if (!file) return;
     setIsAnalyzing(true);
-    setTimeout(() => {
-      setIsAnalyzing(false);
+    setError(null);
+
+    try {
+      const form = new FormData();
+      form.append("file", file);
+      const res = await fetch("http://localhost:8000/analyze", {
+        method: "POST",
+        body: form,
+      });
+
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        throw new Error(body.detail ?? `Server error ${res.status}`);
+      }
+
+      const data: AnalysisResult = await res.json();
+      setResult(data);
       setAnalyzed(true);
-    }, 2500);
+    } catch (err) {
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Could not reach the backend. Make sure the FastAPI server is running on localhost:8000."
+      );
+    } finally {
+      setIsAnalyzing(false);
+    }
   };
 
   const clearImage = () => {
     setPreview(null);
+    setFile(null);
     setAnalyzed(false);
+    setResult(null);
+    setError(null);
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
@@ -144,16 +182,74 @@ const UploadSection = () => {
             </div>
           )}
 
-          {/* Demo Result */}
-          {analyzed && (
+          {/* Error */}
+          {error && (
+            <div className="mt-4 bg-destructive/10 border border-destructive/30 rounded-xl p-4 flex items-start gap-3">
+              <AlertCircle className="w-5 h-5 text-destructive flex-shrink-0 mt-0.5" />
+              <div>
+                <p className="font-semibold text-destructive text-sm mb-0.5">Analysis failed</p>
+                <p className="text-sm text-muted-foreground">{error}</p>
+              </div>
+            </div>
+          )}
+
+          {/* Analysis Result */}
+          {analyzed && result && (
             <div className="mt-4 bg-secondary/10 border border-secondary/30 rounded-xl p-5">
-              <div className="flex items-start gap-3">
+              <div className="flex items-start gap-3 mb-4">
                 <CheckCircle className="w-5 h-5 text-secondary flex-shrink-0 mt-0.5" />
                 <div>
-                  <p className="font-semibold text-foreground mb-1">Analysis Complete (Demo)</p>
-                  <p className="text-sm text-muted-foreground">
-                    This is a frontend demo — connect a real AI backend to get actual predictions. The model would classify this image across 10 dermatological categories.
+                  <p className="font-semibold text-foreground">Analysis Complete</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    Consult a dermatologist for professional diagnosis.
                   </p>
+                </div>
+              </div>
+
+              {/* Primary prediction */}
+              <div className="bg-card border border-border rounded-lg px-4 py-3 mb-3">
+                <p className="text-xs text-muted-foreground mb-1">Most likely condition</p>
+                <div className="flex items-center justify-between gap-2">
+                  <p className="font-bold text-foreground text-base leading-tight">
+                    {result.predicted_class}
+                  </p>
+                  <span className="text-sm font-semibold text-secondary whitespace-nowrap">
+                    {(result.confidence * 100).toFixed(1)}%
+                  </span>
+                </div>
+                <div className="mt-2 h-2 rounded-full bg-muted overflow-hidden">
+                  <div
+                    className="h-full rounded-full bg-secondary transition-all duration-700"
+                    style={{ width: `${(result.confidence * 100).toFixed(1)}%` }}
+                  />
+                </div>
+              </div>
+
+              {/* Top-3 breakdown */}
+              <div>
+                <p className="text-xs text-muted-foreground mb-2 font-medium">Top 3 predictions</p>
+                <div className="space-y-2">
+                  {result.top3.map((item, i) => (
+                    <div key={item.class} className="flex items-center gap-3">
+                      <span className="text-xs text-muted-foreground w-4 text-right">{i + 1}.</span>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center justify-between gap-2 mb-1">
+                          <span className="text-xs font-medium text-foreground truncate">
+                            {item.class}
+                          </span>
+                          <span className="text-xs text-muted-foreground whitespace-nowrap">
+                            {(item.probability * 100).toFixed(1)}%
+                          </span>
+                        </div>
+                        <div className="h-1.5 rounded-full bg-muted overflow-hidden">
+                          <div
+                            className="h-full rounded-full bg-primary/60 transition-all duration-700"
+                            style={{ width: `${(item.probability * 100).toFixed(1)}%` }}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
